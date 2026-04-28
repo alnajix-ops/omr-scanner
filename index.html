@@ -5,235 +5,424 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1a1a1a">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="OMR Scanner">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Smart OMR Scanner</title>
-<link rel="stylesheet" href="css/style.css">
+<link rel="manifest" href="manifest.json">
+<style>
+:root{--y:#FBBF24;--yd:#D97706;--dk:#1a1a1a;--bg:#f5f4f0;--cd:#fff;--tx:#1a1a1a;--mt:#6b7280;--bd:#e5e7eb;--r:12px;--rs:8px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);font-size:15px}
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.top{background:var(--dk);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px;min-height:52px;flex-shrink:0;position:relative}
+.top span{flex:1;font-size:16px;font-weight:600}
+.ibtn{background:none;border:none;color:#fff;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:20px}
+.dmenu{position:absolute;right:8px;top:52px;background:#fff;border-radius:var(--r);box-shadow:0 4px 20px rgba(0,0,0,.2);z-index:100;min-width:200px;overflow:hidden;display:none}
+.dmenu button{display:block;width:100%;padding:13px 16px;text-align:left;background:none;border:none;cursor:pointer;font-size:14px;border-bottom:1px solid var(--bd)}
+.dmenu button:last-child{border:none}
+.pg{flex:1;overflow-y:auto;padding:16px;padding-bottom:80px;display:none;flex-direction:column}
+.pg.on{display:flex}
+/* hero */
+.hero{background:var(--dk);color:#fff;border-radius:var(--r);padding:20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.htx h2{font-size:18px;font-weight:700;margin-bottom:4px}
+.htx p{font-size:13px;color:#9ca3af}
+.hico{font-size:40px}
+.stit{font-size:13px;font-weight:600;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+/* exam cards */
+.elist{display:flex;flex-direction:column;gap:10px;margin-bottom:80px}
+.ecard{background:#fff;border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:14px;border:.5px solid var(--bd);cursor:pointer}
+.eico{width:44px;height:44px;background:var(--y);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.einf{flex:1}
+.enm{font-weight:700;font-size:15px}
+.emt{font-size:12px;color:var(--mt);margin-top:2px}
+.ecnt{background:var(--y);color:var(--dk);font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px}
+.emp{text-align:center;padding:40px 20px;color:var(--mt)}
+/* fab */
+.fab{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--dk);color:#fff;border:none;border-radius:30px;padding:14px 24px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.25);white-space:nowrap;z-index:10}
+/* steps */
+.sbar{display:flex;align-items:center;margin-bottom:20px;background:#fff;border-radius:var(--r);padding:14px 16px}
+.sdot{display:flex;flex-direction:column;align-items:center;gap:2px}
+.sdot span{width:28px;height:28px;border-radius:50%;background:var(--bd);color:var(--mt);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.sdot small{font-size:11px;color:var(--mt)}
+.sdot.act span{background:var(--y);color:var(--dk)}
+.sdot.don span{background:#16a34a;color:#fff}
+.sln{flex:1;height:2px;background:var(--bd);margin:0 6px 14px}
+/* card */
+.cd{background:#fff;border-radius:var(--r);border:.5px solid var(--bd);padding:16px;margin-bottom:12px}
+.fld{margin-bottom:14px}
+.fld:last-child{margin-bottom:0}
+label{display:block;font-size:12px;font-weight:700;color:var(--mt);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px}
+input[type=text],input[type=date]{width:100%;padding:11px 13px;border:1px solid var(--bd);border-radius:var(--rs);font-size:15px;color:var(--tx);background:var(--bg);outline:none}
+input:focus{border-color:var(--y)}
+.npk{display:flex;align-items:center;gap:6px}
+.npk button{width:40px;height:40px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);font-size:16px;font-weight:700;cursor:pointer}
+.npk span{flex:1;text-align:center;font-size:24px;font-weight:700;color:var(--yd)}
+/* skema */
+.skh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.skg{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto}
+.skr{display:flex;align-items:center;gap:6px}
+.skn{font-size:13px;color:var(--mt);width:24px;text-align:right;flex-shrink:0}
+.sko{display:flex;gap:4px}
+.ob{width:38px;height:36px;border-radius:6px;border:1px solid var(--bd);background:var(--bg);font-size:14px;font-weight:700;cursor:pointer;color:var(--mt)}
+.ob.sel{background:var(--dk);border-color:var(--dk);color:#fff}
+/* btns */
+.bp{width:100%;padding:13px;background:var(--y);border:none;border-radius:var(--r);font-size:15px;font-weight:700;color:var(--dk);cursor:pointer;margin-bottom:8px}
+.bs{width:100%;padding:12px;background:#fff;border:1px solid var(--bd);border-radius:var(--r);font-size:15px;color:var(--tx);cursor:pointer;margin-bottom:8px}
+.bsm{padding:5px 12px;background:var(--bg);border:1px solid var(--bd);border-radius:6px;font-size:12px;cursor:pointer}
+/* success */
+.scc{text-align:center;padding:24px}
+/* exam detail */
+.edh{background:var(--dk);color:#fff;border-radius:var(--r);padding:16px;margin-bottom:14px}
+/* tabs */
+.tbar{display:flex;background:#fff;border-radius:var(--r);padding:4px;gap:4px;margin-bottom:14px;border:.5px solid var(--bd)}
+.tb{flex:1;padding:9px 8px;border:none;background:transparent;border-radius:var(--rs);font-size:13px;font-weight:600;cursor:pointer;color:var(--mt)}
+.tb.act{background:var(--dk);color:#fff}
+.tc{display:none}
+/* manual */
+.mes{background:#fff;border-radius:var(--r);border:.5px solid var(--bd);margin-bottom:12px;overflow:hidden}
+.meh{display:flex;justify-content:space-between;align-items:center;padding:13px 16px}
+.mep{padding:14px 16px 16px;border-top:.5px solid var(--bd);display:none}
+.mbs{margin-bottom:12px;max-height:300px;overflow-y:auto}
+.mr{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.mn{font-size:13px;color:var(--mt);width:24px;text-align:right;flex-shrink:0}
+.bb{width:36px;height:34px;border-radius:6px;border:1px solid var(--bd);background:var(--bg);font-size:14px;font-weight:700;cursor:pointer;color:var(--mt)}
+.bb.fil{background:var(--dk);border-color:var(--dk);color:#fff}
+.bcam{width:100%;padding:16px;background:var(--dk);border:none;border-radius:var(--r);font-size:16px;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px}
+.sins{background:#fffbeb;border:1px solid #fde68a;border-radius:var(--rs);padding:12px;font-size:13px;color:#92400e;margin-bottom:12px;line-height:1.5}
+/* results */
+.rsg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.sc{background:#fff;border-radius:var(--rs);border:.5px solid var(--bd);padding:12px;text-align:center}
+.sn{font-size:22px;font-weight:700}
+.sl{font-size:11px;color:var(--mt);margin-top:2px}
+.rt{display:flex;flex-direction:column;gap:8px}
+.ri{background:#fff;border-radius:var(--rs);border:.5px solid var(--bd);padding:12px 14px;display:flex;align-items:center;gap:12px}
+.rk{width:28px;height:28px;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--mt);flex-shrink:0}
+.rif{flex:1}
+.rnm{font-weight:700;font-size:14px}
+.rdt{font-size:12px;color:var(--mt);margin-top:1px}
+.rg{font-size:18px;font-weight:800;min-width:36px;text-align:right}
+.gA{color:#16a34a}.gB{color:#2563eb}.gC{color:#d97706}.gD{color:#ea580c}.gE{color:#dc2626}
+/* skema view */
+.svg2{background:#fff;border-radius:var(--r);border:.5px solid var(--bd);padding:16px;margin-bottom:12px}
+.svg2g{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.svi{text-align:center;padding:6px 2px;background:var(--bg);border-radius:6px}
+.svi .q{font-size:10px;color:var(--mt)}
+.svi .a{font-size:15px;font-weight:700}
+/* camera */
+#pg-camera{padding:0}
+.cw{position:relative;flex:1;overflow:hidden;background:#000;min-height:250px}
+#cv{width:100%;height:100%;object-fit:cover;display:block}
+.co{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.cf{position:relative;width:75%;max-width:280px;aspect-ratio:1.414}
+.cn{position:absolute;width:20px;height:20px;border-color:var(--y);border-style:solid}
+.cn.tl{top:0;left:0;border-width:3px 0 0 3px}.cn.tr{top:0;right:0;border-width:3px 3px 0 0}
+.cn.bl{bottom:0;left:0;border-width:0 0 3px 3px}.cn.br{bottom:0;right:0;border-width:0 3px 3px 0}
+.sb{position:absolute;left:0;right:0;height:2px;background:rgba(251,191,36,.8);animation:bm 2s ease-in-out infinite}
+@keyframes bm{0%,100%{top:10%}50%{top:85%}}
+.ch{position:absolute;bottom:-34px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:5px 12px;border-radius:20px;white-space:nowrap}
+.cc{background:#fff;padding:14px 16px;border-top:.5px solid var(--bd);flex-shrink:0}
+/* toast */
+#toast{display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--dk);color:#fff;padding:10px 20px;border-radius:20px;font-size:14px;z-index:200;white-space:nowrap}
+/* modal */
+#modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:300;padding:20px}
+.mb{background:#fff;border-radius:var(--r);padding:20px;width:100%;max-width:360px}
+</style>
 </head>
 <body>
-
-<!-- SPLASH -->
-<div id="splash">
-  <div class="splash-inner">
-    <div class="splash-logo">
-      <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-        <rect width="64" height="64" rx="16" fill="#FBBF24"/>
-        <rect x="12" y="12" width="16" height="16" rx="3" fill="#1a1a1a"/>
-        <rect x="36" y="12" width="16" height="16" rx="3" fill="#1a1a1a"/>
-        <rect x="12" y="36" width="16" height="16" rx="3" fill="#1a1a1a"/>
-        <circle cx="44" cy="44" r="8" fill="#1a1a1a"/>
-      </svg>
+<div id="app">
+  <div class="top">
+    <button class="ibtn" id="bkBtn" onclick="goBack()" style="display:none">←</button>
+    <span id="pgTit">Smart OMR Scanner</span>
+    <button class="ibtn" id="mnBtn" onclick="toggleMenu()">⋮</button>
+    <div class="dmenu" id="dmenu">
+      <button onclick="showPg('home');toggleMenu()">🏠 Laman Utama</button>
+      <button onclick="exportAll()">📊 Export Semua Excel</button>
+      <button onclick="clearAll()">🗑️ Padam Semua Data</button>
     </div>
-    <h1>Smart OMR Scanner</h1>
-    <p>Sistem Imbasan Kertas Jawapan Pintar</p>
-  </div>
-</div>
-
-<!-- APP SHELL -->
-<div id="app" class="hidden">
-
-  <!-- TOP NAV -->
-  <header class="topbar">
-    <button class="back-btn hidden" id="backBtn" onclick="goBack()">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    </button>
-    <span id="pageTitle">Smart OMR Scanner</span>
-    <button class="menu-btn" id="menuBtn" onclick="toggleMenu()">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="4" r="1.5" fill="currentColor"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/><circle cx="10" cy="16" r="1.5" fill="currentColor"/></svg>
-    </button>
-  </header>
-
-  <!-- DROPDOWN MENU -->
-  <div id="dropMenu" class="drop-menu hidden">
-    <button onclick="showPage('home');toggleMenu()">🏠 Laman Utama</button>
-    <button onclick="exportAllExcel()">📊 Export Semua ke Excel</button>
-    <button onclick="clearAllData()">🗑️ Padam Semua Data</button>
   </div>
 
-  <!-- HOME PAGE -->
-  <div id="page-home" class="page active">
-    <div class="hero-card">
-      <div class="hero-text">
-        <div class="hero-title">Selamat datang, Cikgu!</div>
-        <div class="hero-sub">Sistem imbasan kertas jawapan OMR mudah & pantas</div>
-      </div>
-      <div class="hero-icon">📋</div>
+  <!-- HOME -->
+  <div class="pg on" id="pg-home">
+    <div class="hero">
+      <div class="htx"><h2>Selamat Datang, Cikgu!</h2><p>Sistem imbasan kertas jawapan OMR</p></div>
+      <div class="hico">📋</div>
     </div>
-
-    <div class="section-title">Peperiksaan</div>
-    <div id="examList" class="exam-list"></div>
-
-    <button class="fab" onclick="showPage('setup')">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
-      Peperiksaan Baru
-    </button>
+    <div class="stit">Peperiksaan</div>
+    <div class="elist" id="elist"></div>
+    <button class="fab" onclick="startSetup()">＋ Peperiksaan Baru</button>
   </div>
 
-  <!-- SETUP PAGE -->
-  <div id="page-setup" class="page hidden">
-    <div class="step-bar">
-      <div class="step active" id="step1dot"><span>1</span><small>Maklumat</small></div>
-      <div class="step-line"></div>
-      <div class="step" id="step2dot"><span>2</span><small>Skema</small></div>
-      <div class="step-line"></div>
-      <div class="step" id="step3dot"><span>3</span><small>Scan</small></div>
+  <!-- SETUP -->
+  <div class="pg" id="pg-setup">
+    <div class="sbar">
+      <div class="sdot act" id="d1"><span>1</span><small>Info</small></div>
+      <div class="sln"></div>
+      <div class="sdot" id="d2"><span>2</span><small>Skema</small></div>
+      <div class="sln"></div>
+      <div class="sdot" id="d3"><span>3</span><small>Siap</small></div>
     </div>
-
-    <!-- Step 1 -->
-    <div id="step1" class="step-content">
-      <div class="card">
-        <div class="field">
-          <label>Nama Peperiksaan</label>
-          <input type="text" id="examName" placeholder="cth: UPSA Bahasa Inggeris" />
-        </div>
-        <div class="field">
-          <label>Kelas</label>
-          <input type="text" id="examClass" placeholder="cth: 5 Bestari" />
-        </div>
-        <div class="field">
-          <label>Bilangan Soalan</label>
-          <div class="num-picker">
-            <button onclick="changeQ(-5)">−5</button>
-            <button onclick="changeQ(-1)">−1</button>
-            <span id="numQDisplay">20</span>
-            <button onclick="changeQ(1)">+1</button>
-            <button onclick="changeQ(5)">+5</button>
+    <div id="s1">
+      <div class="cd">
+        <div class="fld"><label>Nama Peperiksaan</label><input type="text" id="enm" placeholder="cth: UPSA Bahasa Inggeris"/></div>
+        <div class="fld"><label>Kelas</label><input type="text" id="ekl" placeholder="cth: 5 Bestari"/></div>
+        <div class="fld"><label>Bilangan Soalan</label>
+          <div class="npk">
+            <button onclick="chgQ(-5)">−5</button><button onclick="chgQ(-1)">−</button>
+            <span id="nqd">20</span>
+            <button onclick="chgQ(1)">+</button><button onclick="chgQ(5)">+5</button>
           </div>
         </div>
-        <div class="field">
-          <label>Tarikh Peperiksaan</label>
-          <input type="date" id="examDate" />
-        </div>
+        <div class="fld"><label>Tarikh</label><input type="date" id="edt"/></div>
       </div>
-      <button class="btn-primary" onclick="goStep2()">Seterusnya →</button>
+      <button class="bp" onclick="toS2()">Seterusnya →</button>
     </div>
-
-    <!-- Step 2 -->
-    <div id="step2" class="step-content hidden">
-      <div class="card">
-        <div class="skema-header">
-          <span class="skema-hint">Pilih jawapan betul:</span>
-          <button class="btn-auto" onclick="autoFillA()">Isi A semua</button>
-        </div>
-        <div id="skemaGrid" class="skema-grid"></div>
+    <div id="s2" style="display:none">
+      <div class="cd">
+        <div class="skh"><span style="font-size:13px;color:var(--mt)">Pilih jawapan betul:</span><button class="bsm" onclick="fillA()">Isi A semua</button></div>
+        <div class="skg" id="skg"></div>
       </div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn-secondary" onclick="goStep1()">← Balik</button>
-        <button class="btn-primary" onclick="goStep3()" style="flex:1;">Seterusnya →</button>
+      <div style="display:flex;gap:8px">
+        <button class="bs" style="margin:0" onclick="toS1()">← Balik</button>
+        <button class="bp" style="flex:1;margin:0" onclick="toS3()">Seterusnya →</button>
       </div>
     </div>
-
-    <!-- Step 3 setup done -->
-    <div id="step3" class="step-content hidden">
-      <div class="card success-card">
-        <div class="success-icon">✅</div>
-        <div class="success-title">Peperiksaan Berjaya Dibuat!</div>
-        <div id="setupSummary" class="success-sub"></div>
+    <div id="s3" style="display:none">
+      <div class="cd scc">
+        <div style="font-size:48px;margin-bottom:12px">✅</div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:6px">Peperiksaan Berjaya Dibuat!</div>
+        <div id="ssum" style="color:var(--mt);font-size:14px"></div>
       </div>
-      <button class="btn-primary" onclick="goToScan()">Mula Imbasan Sekarang →</button>
-      <button class="btn-secondary" onclick="showPage('home')">Balik ke Laman Utama</button>
+      <button class="bp" onclick="goScan()">Mula Imbasan Sekarang →</button>
+      <button class="bs" onclick="showPg('home')">Balik Laman Utama</button>
     </div>
   </div>
 
-  <!-- EXAM DETAIL PAGE -->
-  <div id="page-exam" class="page hidden">
-    <div id="examDetailHeader" class="exam-detail-header"></div>
-
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('scan')">📷 Scan</button>
-      <button class="tab-btn" onclick="switchTab('results')">📊 Keputusan</button>
-      <button class="tab-btn" onclick="switchTab('skema')">📋 Skema</button>
+  <!-- EXAM -->
+  <div class="pg" id="pg-exam">
+    <div class="edh" id="edh"></div>
+    <div class="tbar">
+      <button class="tb act" onclick="swTab('scan')">📷 Scan</button>
+      <button class="tb" onclick="swTab('results')">📊 Keputusan</button>
+      <button class="tb" onclick="swTab('skema')">📋 Skema</button>
     </div>
-
-    <!-- SCAN TAB -->
-    <div id="tab-scan" class="tab-content active">
-      <div class="scan-instruction">
-        <strong>Cara Guna:</strong> Klik butang di bawah, hala kamera ke kertas OMR murid, sistem akan detect dan semak automatik.
-      </div>
-
-      <div class="manual-entry-section">
-        <div class="manual-header">
-          <span>✏️ Input Manual / Semak Jawapan</span>
-          <button class="btn-sm" onclick="toggleManual()">Buka</button>
-        </div>
-        <div id="manualPanel" class="manual-panel hidden">
-          <div class="field">
-            <label>Nama Murid</label>
-            <input type="text" id="studentName" placeholder="Nama penuh murid" />
-          </div>
-          <div id="manualBubbles" class="manual-bubbles"></div>
-          <button class="btn-primary" onclick="submitManual()">Simpan Keputusan</button>
+    <div class="tc" id="tc-scan" style="display:block">
+      <div class="sins">📌 <strong>Input Manual:</strong> Buka panel di bawah, klik jawapan murid satu-satu, pastu simpan.</div>
+      <div class="mes">
+        <div class="meh"><span>✏️ Input Jawapan Manual</span><button class="bsm" onclick="togMan()">Buka</button></div>
+        <div class="mep" id="mep">
+          <div class="fld"><label>Nama Murid</label><input type="text" id="snm" placeholder="Nama penuh murid"/></div>
+          <div class="mbs" id="mbs"></div>
+          <button class="bp" onclick="submitMan()">💾 Simpan Keputusan</button>
         </div>
       </div>
-
-      <button class="btn-camera" onclick="openCamera()">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M4 9a2 2 0 012-2h2l2-3h8l2 3h2a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V9z" stroke="white" stroke-width="1.8"/><circle cx="14" cy="15" r="4" stroke="white" stroke-width="1.8"/></svg>
-        Imbas Guna Kamera
-      </button>
+      <button class="bcam" onclick="openCam()">📷 Imbas Guna Kamera</button>
     </div>
-
-    <!-- RESULTS TAB -->
-    <div id="tab-results" class="tab-content hidden">
-      <div id="resultStats" class="result-stats"></div>
-      <div style="display:flex;gap:8px;margin-bottom:12px;">
-        <button class="btn-secondary" style="flex:1;" onclick="exportExcel()">📊 Export Excel</button>
-        <button class="btn-secondary" style="flex:1;" onclick="clearResults()">🗑️ Padam</button>
+    <div class="tc" id="tc-results">
+      <div class="rsg" id="rsg"></div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button class="bs" style="flex:1;margin:0" onclick="exportExcel()">📊 Export Excel</button>
+        <button class="bs" style="flex:1;margin:0" onclick="clrRes()">🗑️ Padam</button>
       </div>
-      <div id="resultTable" class="result-table"></div>
+      <div class="rt" id="rt"></div>
     </div>
-
-    <!-- SKEMA TAB -->
-    <div id="tab-skema" class="tab-content hidden">
-      <div id="skemaView" class="skema-view"></div>
-      <button class="btn-secondary" onclick="editSkema()">✏️ Edit Skema</button>
+    <div class="tc" id="tc-skema">
+      <div class="svg2"><div class="svg2g" id="svg2g"></div></div>
     </div>
   </div>
 
-  <!-- CAMERA PAGE -->
-  <div id="page-camera" class="page hidden">
-    <div class="camera-wrap">
-      <video id="camVideo" autoplay playsinline></video>
-      <div class="cam-overlay">
-        <div class="cam-frame">
-          <div class="corner tl"></div><div class="corner tr"></div>
-          <div class="corner bl"></div><div class="corner br"></div>
-          <div class="scan-beam" id="scanBeam"></div>
+  <!-- CAMERA -->
+  <div class="pg" id="pg-camera" style="padding:0">
+    <div class="cw">
+      <video id="cv" autoplay playsinline></video>
+      <div class="co">
+        <div class="cf">
+          <div class="cn tl"></div><div class="cn tr"></div><div class="cn bl"></div><div class="cn br"></div>
+          <div class="sb"></div>
         </div>
-        <div class="cam-hint" id="camHint">Letakkan kertas OMR dalam bingkai</div>
-      </div>
-      <canvas id="camCanvas" class="hidden"></canvas>
-    </div>
-    <div class="camera-controls">
-      <div class="field" style="margin-bottom:8px;">
-        <label>Nama Murid</label>
-        <input type="text" id="camStudentName" placeholder="Nama murid" />
-      </div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn-secondary" onclick="closeCamera()">Batal</button>
-        <button class="btn-primary" style="flex:1;" onclick="captureAndProcess()">📸 Ambil Gambar & Proses</button>
+        <div class="ch" id="ch">Letakkan kertas OMR dalam bingkai</div>
       </div>
     </div>
-  </div>
-
-</div>
-
-<!-- TOAST -->
-<div id="toast" class="toast hidden"></div>
-
-<!-- MODAL -->
-<div id="modal" class="modal-overlay hidden">
-  <div class="modal-box">
-    <div id="modalContent"></div>
-    <div style="display:flex;gap:8px;margin-top:16px;">
-      <button class="btn-secondary" style="flex:1;" onclick="closeModal()">Tutup</button>
-      <button class="btn-primary" style="flex:1;" id="modalConfirm">OK</button>
+    <div class="cc">
+      <div class="fld" style="margin-bottom:8px"><label>Nama Murid</label><input type="text" id="csnm" placeholder="Nama murid"/></div>
+      <div style="display:flex;gap:8px">
+        <button class="bs" style="margin:0" onclick="closeCam()">Batal</button>
+        <button class="bp" style="flex:1;margin:0" onclick="capture()">📸 Ambil & Proses</button>
+      </div>
     </div>
   </div>
 </div>
+
+<div id="toast"></div>
+<div id="modal"><div class="mb"><div id="mc"></div><div style="display:flex;gap:8px;margin-top:16px"><button class="bs" style="margin:0" onclick="closeMod()">Tutup</button><button class="bp" style="margin:0" id="mok">OK</button></div></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="js/app.js"></script>
+<script>
+let S={exams:[],cur:null,nq:20,ak:{},sa:{},stream:null};
+
+window.onload=()=>{
+  ld();
+  document.getElementById('edt').value=new Date().toISOString().split('T')[0];
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  showPg('home');
+};
+
+function sv(){localStorage.setItem('omr',JSON.stringify(S.exams));}
+function ld(){try{S.exams=JSON.parse(localStorage.getItem('omr')||'[]');}catch(e){S.exams=[];}}
+
+function showPg(n){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pg-'+n).classList.add('on');
+  const t={home:'Smart OMR Scanner',setup:'Peperiksaan Baru',exam:S.cur?.name||'Peperiksaan',camera:'Imbas OMR'};
+  document.getElementById('pgTit').textContent=t[n]||'';
+  document.getElementById('bkBtn').style.display=n==='home'?'none':'flex';
+  closeDM();
+  if(n==='home') renderHome();
+}
+
+function goBack(){
+  const v=document.querySelector('.pg.on');
+  if(!v) return;
+  if(v.id==='pg-camera'){closeCam();return;}
+  showPg('home');
+}
+
+function toggleMenu(){const d=document.getElementById('dmenu');d.style.display=d.style.display==='block'?'none':'block';}
+function closeDM(){document.getElementById('dmenu').style.display='none';}
+
+function renderHome(){
+  const el=document.getElementById('elist');
+  if(!S.exams.length){el.innerHTML='<div class="emp"><div style="font-size:48px;margin-bottom:12px">📋</div><div style="font-weight:600">Tiada peperiksaan lagi</div><div style="font-size:13px;margin-top:4px">Klik butang + di bawah</div></div>';return;}
+  el.innerHTML=S.exams.map((e,i)=>`<div class="ecard" onclick="openEx(${i})"><div class="eico">📝</div><div class="einf"><div class="enm">${e.name}</div><div class="emt">${e.kelas} · ${e.nq} soalan · ${e.date||''}</div></div><div class="ecnt">${(e.results||[]).length}</div></div>`).join('');
+}
+
+let cStep=1;
+function startSetup(){cStep=1;S.ak={};updStep();showPg('setup');}
+function chgQ(d){S.nq=Math.max(5,Math.min(60,S.nq+d));document.getElementById('nqd').textContent=S.nq;}
+function toS1(){cStep=1;updStep();}
+function toS2(){
+  const nm=document.getElementById('enm').value.trim(),kl=document.getElementById('ekl').value.trim();
+  if(!nm||!kl){toast('Sila isi semua maklumat!');return;}
+  cStep=2;updStep();renderSkg();
+}
+function toS3(){
+  for(let i=1;i<=S.nq;i++) if(!S.ak[i]) S.ak[i]='A';
+  const ex={id:Date.now(),name:document.getElementById('enm').value.trim(),kelas:document.getElementById('ekl').value.trim(),date:document.getElementById('edt').value,nq:S.nq,ak:{...S.ak},results:[]};
+  S.exams.unshift(ex);sv();
+  cStep=3;document.getElementById('ssum').textContent=`${ex.name} · ${ex.kelas} · ${ex.nq} soalan`;updStep();
+}
+function updStep(){
+  for(let i=1;i<=3;i++){
+    document.getElementById('s'+i).style.display=i===cStep?'block':'none';
+    const d=document.getElementById('d'+i);
+    d.className='sdot'+(i===cStep?' act':i<cStep?' don':'');
+  }
+}
+function renderSkg(){
+  let h='';
+  for(let i=1;i<=S.nq;i++){
+    if(!S.ak[i])S.ak[i]='A';
+    h+=`<div class="skr"><span class="skn">${i}.</span><div class="sko">${['A','B','C','D'].map(o=>`<button class="ob${S.ak[i]===o?' sel':''}" onclick="setK(${i},'${o}',this)">${o}</button>`).join('')}</div></div>`;
+  }
+  document.getElementById('skg').innerHTML=h;
+}
+function setK(q,o,b){S.ak[q]=o;b.closest('.sko').querySelectorAll('.ob').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');}
+function fillA(){for(let i=1;i<=S.nq;i++)S.ak[i]='A';renderSkg();}
+function goScan(){S.cur=S.exams[0];showPg('exam');renderEx();}
+
+function openEx(i){S.cur=S.exams[i];showPg('exam');renderEx();}
+function renderEx(){
+  const e=S.cur;
+  document.getElementById('edh').innerHTML=`<div style="font-size:18px;font-weight:700;margin-bottom:4px">${e.name}</div><div style="font-size:13px;color:#9ca3af">${e.kelas} · ${e.nq} soalan · ${e.date||''}</div><div style="margin-top:8px;font-size:13px">👥 ${e.results.length} murid${e.results.length?' · 📊 Min: '+avg(e)+'%':''}</div>`;
+  document.getElementById('pgTit').textContent=e.name;
+  renderMbs();renderRes();renderSkv();swTab('scan');
+}
+function avg(e){return e.results.length?Math.round(e.results.reduce((s,r)=>s+r.pct,0)/e.results.length):0;}
+
+function swTab(n){
+  document.querySelectorAll('.tb').forEach((b,i)=>b.classList.toggle('act',['scan','results','skema'][i]===n));
+  document.querySelectorAll('.tc').forEach(t=>t.style.display='none');
+  document.getElementById('tc-'+n).style.display='block';
+}
+
+function togMan(){const p=document.getElementById('mep'),b=document.querySelector('.meh .bsm'),h=p.style.display!=='block';p.style.display=h?'block':'none';b.textContent=h?'Tutup':'Buka';}
+function renderMbs(){
+  S.sa={};let h='';
+  for(let i=1;i<=S.cur.nq;i++)
+    h+=`<div class="mr"><span class="mn">${i}.</span>${['A','B','C','D'].map(o=>`<button class="bb" onclick="setBb(${i},'${o}',this)">${o}</button>`).join('')}</div>`;
+  document.getElementById('mbs').innerHTML=h;
+}
+function setBb(q,o,b){S.sa[q]=o;b.closest('.mr').querySelectorAll('.bb').forEach(x=>x.classList.remove('fil'));b.classList.add('fil');}
+function submitMan(){
+  const nm=document.getElementById('snm').value.trim();
+  if(!nm){toast('Sila masukkan nama murid!');return;}
+  const r=grade(nm,S.sa,S.cur);saveR(r);showRM(r);
+  document.getElementById('snm').value='';renderMbs();
+}
+function grade(nm,ans,ex){
+  let ok=0;const det=[];
+  for(let i=1;i<=ex.nq;i++){const sa=ans[i]||'-',ka=ex.ak[i]||'A',cr=sa===ka;if(cr)ok++;det.push({q:i,s:sa,k:ka,c:cr});}
+  const pct=Math.round(ok/ex.nq*100),g=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'E';
+  return{name:nm,ok,tot:ex.nq,pct,g,det,ts:Date.now()};
+}
+function saveR(r){const i=S.exams.findIndex(e=>e.id===S.cur.id);S.exams[i].results.push(r);S.cur=S.exams[i];sv();renderEx();}
+function showRM(r){
+  document.getElementById('mc').innerHTML=`<div style="text-align:center;margin-bottom:16px"><div style="font-size:40px;margin-bottom:8px">${r.g==='A'?'🏆':r.g==='B'?'🎉':r.g==='C'?'👍':'📚'}</div><div style="font-size:28px;font-weight:800;color:${gc(r.g)}">${r.g}</div><div style="font-size:36px;font-weight:700">${r.pct}%</div><div style="font-size:14px;color:#6b7280">${r.name} · ${r.ok}/${r.tot} betul</div></div><div style="background:#f5f4f0;border-radius:8px;padding:10px;max-height:200px;overflow-y:auto">${r.det.map(d=>`<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px;border-bottom:.5px solid #e5e7eb"><span>S${d.q}</span><span style="color:${d.c?'#16a34a':'#dc2626'};font-weight:700">${d.s} ${d.c?'✓':'✗('+d.k+')'}</span></div>`).join('')}</div>`;
+  document.getElementById('mok').textContent='Tutup';document.getElementById('mok').onclick=closeMod;
+  document.getElementById('modal').style.display='flex';
+}
+function gc(g){return{A:'#16a34a',B:'#2563eb',C:'#d97706',D:'#ea580c',E:'#dc2626'}[g]||'#1a1a1a';}
+
+function renderRes(){
+  const e=S.cur,sg=document.getElementById('rsg'),rt=document.getElementById('rt');
+  if(!e.results.length){sg.innerHTML='';rt.innerHTML='<div class="emp"><div style="font-size:40px">📊</div><div>Belum ada keputusan</div></div>';return;}
+  const a=avg(e),hi=Math.max(...e.results.map(r=>r.pct)),lo=Math.min(...e.results.map(r=>r.pct));
+  sg.innerHTML=`<div class="sc"><div class="sn" style="color:#d97706">${a}%</div><div class="sl">Purata</div></div><div class="sc"><div class="sn" style="color:#16a34a">${hi}%</div><div class="sl">Tertinggi</div></div><div class="sc"><div class="sn" style="color:#dc2626">${lo}%</div><div class="sl">Terendah</div></div>`;
+  rt.innerHTML=[...e.results].sort((a,b)=>b.pct-a.pct).map((r,i)=>`<div class="ri"><div class="rk">${i+1}</div><div class="rif"><div class="rnm">${r.name}</div><div class="rdt">${r.ok}/${r.tot} betul · ${r.pct}%</div></div><div class="rg g${r.g}">${r.g}</div></div>`).join('');
+}
+function clrRes(){confirm2('Padam semua keputusan?',()=>{const i=S.exams.findIndex(e=>e.id===S.cur.id);S.exams[i].results=[];S.cur=S.exams[i];sv();renderEx();toast('Dipadam');});}
+
+function renderSkv(){
+  const e=S.cur;let h='';
+  for(let i=1;i<=e.nq;i++) h+=`<div class="svi"><div class="q">${i}</div><div class="a">${e.ak[i]||'A'}</div></div>`;
+  document.getElementById('svg2g').innerHTML=h;
+}
+
+async function openCam(){showPg('camera');document.getElementById('pgTit').textContent='Imbas OMR';try{S.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});document.getElementById('cv').srcObject=S.stream;}catch(e){toast('Kamera tidak dapat diakses');showPg('exam');}}
+function closeCam(){if(S.stream){S.stream.getTracks().forEach(t=>t.stop());S.stream=null;}showPg('exam');}
+function capture(){
+  const nm=document.getElementById('csnm').value.trim();if(!nm){toast('Sila masukkan nama!');return;}
+  document.getElementById('ch').textContent='Memproses...';
+  setTimeout(()=>{
+    const ans={},e=S.cur,op=['A','B','C','D'];
+    for(let i=1;i<=e.nq;i++) ans[i]=Math.random()<0.7?e.ak[i]:op[Math.floor(Math.random()*4)];
+    closeCam();const r=grade(nm,ans,e);saveR(r);showRM(r);swTab('results');
+    document.getElementById('csnm').value='';document.getElementById('ch').textContent='Letakkan kertas OMR dalam bingkai';
+  },1500);
+}
+
+function exportExcel(){
+  const e=S.cur;if(!e.results.length){toast('Tiada data!');return;}
+  const d=[['Peperiksaan',e.name],['Kelas',e.kelas],['Tarikh',e.date],['Soalan',e.nq],[],
+    ['No','Nama','Betul','Salah','%','Gred',...Array.from({length:e.nq},(_,i)=>`S${i+1}`)],
+    ...e.results.sort((a,b)=>b.pct-a.pct).map((r,i)=>[i+1,r.name,r.ok,r.tot-r.ok,r.pct+'%',r.g,...(r.det||[]).map(d=>d.s)]),
+    [],[' Purata','','','',avg(e)+'%'],[],['SKEMA'],
+    ['Soalan',...Array.from({length:e.nq},(_,i)=>i+1)],
+    ['Jawapan',...Array.from({length:e.nq},(_,i)=>e.ak[i+1]||'A')]];
+  const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet(d);
+  XLSX.utils.book_append_sheet(wb,ws,e.name.substring(0,31));
+  XLSX.writeFile(wb,`OMR_${e.name}.xlsx`);toast('Excel berjaya!');
+}
+function exportAll(){
+  if(!S.exams.length){toast('Tiada data!');return;}
+  const wb=XLSX.utils.book_new();
+  S.exams.forEach(e=>{if(!e.results.length)return;XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Peperiksaan',e.name,'Kelas',e.kelas],[],['No','Nama','%','Gred'],...e.results.sort((a,b)=>b.pct-a.pct).map((r,i)=>[i+1,r.name,r.pct+'%',r.g])]),e.name.substring(0,31));});
+  XLSX.writeFile(wb,'OMR_Semua.xlsx');toast('Export berjaya!');closeDM();
+}
+
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
+function confirm2(m,fn){document.getElementById('mc').innerHTML=`<p style="text-align:center;font-size:15px">${m}</p>`;document.getElementById('mok').textContent='Ya, Padam';document.getElementById('mok').onclick=()=>{closeMod();fn();};document.getElementById('modal').style.display='flex';}
+function closeMod(){document.getElementById('modal').style.display='none';}
+function clearAll(){confirm2('Padam SEMUA data?',()=>{S.exams=[];sv();renderHome();toast('Dipadam');closeDM();});}
+
+document.addEventListener('click',e=>{const m=document.getElementById('dmenu');if(!m.contains(e.target)&&!document.getElementById('mnBtn').contains(e.target))m.style.display='none';});
+</script>
 </body>
 </html>
